@@ -1,5 +1,3 @@
-
-
 from flask import Flask, request, jsonify
 import os
 import base64
@@ -49,19 +47,19 @@ def identify_plant():
 
         # Create message
         message = HumanMessage(content=[
-    {"type": "text", "text": (
-        "Identify the herb in the image and respond in this JSON format:\n"
-        "{\n"
-        "  \"common_name\": \"\",\n"
-        "  \"scientific_name\": \"\",\n"
-        "  \"description\": \"\",\n"
-        "  \"uses\": [\"use1\", \"use2\"],\n"
-        "  \"cultivation\": \"\",\n"
-        "  \"cautions\": [\"caution1\", \"caution2\"]\n"
-        "}\n"
-    )},
-    {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{image_base64}"}}
-])
+            {"type": "text", "text": (
+                "Identify the herb in the image and respond in this JSON format:\n"
+                "{\n"
+                "  \"common_name\": \"\",\n"
+                "  \"scientific_name\": \"\",\n"
+                "  \"description\": \"\",\n"
+                "  \"uses\": [\"use1\", \"use2\"],\n"
+                "  \"cultivation\": \"\",\n"
+                "  \"cautions\": [\"caution1\", \"caution2\"]\n"
+                "}\n"
+            )},
+            {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{image_base64}"}}
+        ])
 
         print("🔵 Sending message to OpenAI...")
         result = llm.invoke([message])
@@ -75,5 +73,8 @@ def identify_plant():
         traceback.print_exc()
         return jsonify({"status": "failure", "error": str(e)}), 500
 
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+
+# ✅ Move this outside the function
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))  # Render sets this env variable
+    app.run(host='0.0.0.0', port=port)
